@@ -5,21 +5,28 @@ import matplotlib.pyplot as plt
 # load image 
 img = cv2.imread('Image2.jpg')
 RGB_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#plt.imshow(RGB_img)
-#plt.show()
 
-# load params 
+# load image params 
 y_dim = RGB_img.shape[0]
 x_dim = RGB_img.shape[1]
-k1 = -1
-k2 = 0
-k3 = 0
 img_distorted = np.zeros(RGB_img.shape).astype(np.uint8)
 y_c = y_dim//2 
 x_c = x_dim//2
-r_max = np.sqrt(2)
-x_scale = int(1+ k1*(r_max**2) + k2*(r_max**4) + k3*(r_max**6))
-y_scale = x_scale
+
+# load distortion params 
+k_pos = 1
+k1 = -0.1
+k2 = 0
+k3 = 0
+
+if k_pos == 0:
+    r_max = np.sqrt(2)
+    x_scale = 1+ k1*(r_max**2) + k2*(r_max**4) + k3*(r_max**6)
+    y_scale = x_scale
+else:
+    r_max = 1
+    x_scale = abs(1+ k1*(r_max**2) + k2*(r_max**4) + k3*(r_max**6))
+    y_scale = x_scale
 
 # distort image 
 for y in range (0, y_dim):
@@ -31,8 +38,10 @@ for y in range (0, y_dim):
         y_dist_norm = y_norm*(1+k1*(r**2) + k2*(r**4) + k3*(r**6))/y_scale
         x_distorted = int(x_dist_norm*x_c + x_c) 
         y_distorted = int(y_dist_norm*y_c + y_c) 
-        img_distorted[y_distorted][x_distorted]=RGB_img[y][x]
-
+        try:
+            img_distorted[y_distorted][x_distorted]=RGB_img[y][x]
+        except:
+            print("out of bounds")
 plt.imshow(RGB_img)
 plt.show()
 plt.imshow(img_distorted)
