@@ -16,7 +16,7 @@ x_c = x_dim//2
 # load distortion params 
 k_pos = 1
 k1 = -0.1
-k2 = 0
+k2 = -0.1
 k3 = 0
 
 if k_pos == 0:
@@ -42,8 +42,9 @@ for y in range (0, y_dim):
             img_distorted[y_distorted][x_distorted]=RGB_img[y][x]
         except:
             print("out of bounds")
-plt.imshow(RGB_img)
-plt.show()
+
+k_text = "k1="+str(k1)+" k2="+str(k2)+" k3="+str(k3)
+cv2.putText(img_distorted, k_text, (int(y_dim*0.8),int(x_dim*0.8)),cv2.FONT_HERSHEY_SIMPLEX,1,(0, 255, 0), 4)
 plt.imshow(img_distorted)
 plt.show()
 
